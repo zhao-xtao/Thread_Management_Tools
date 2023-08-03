@@ -10,7 +10,7 @@
 #define BEGINS(x) namespace x {
 #define ENDS(x) }
 
-BEGINS(haizei)
+BEGINS(thread_pool)
 
 class Task {
 public :
@@ -76,14 +76,12 @@ template<typename FUNCTION, typename ...ARGS>
 void ThreadPool::addOneTask(FUNCTION &&func, ARGS... args) {
     std::unique_lock<std::mutex> lock(m_mutex);
     tasks.push(new Task(func, std::forward<ARGS>(args)...));
-    // 向外通知一次，通知线程任务队列中有任务了
     m_cond.notify_one();
     return ;
 }
 
 Task *ThreadPool::getOneTask() {
     std::unique_lock<std::mutex> lock(m_mutex);
-    // 为什么不能用if？
     while(tasks.empty()) {
         m_cond.wait(lock);
     }
@@ -109,4 +107,4 @@ void ThreadPool::stop() {
     return ;
 }
 
-ENDS(haizei)
+ENDS(thread_pool)

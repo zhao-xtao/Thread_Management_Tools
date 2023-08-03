@@ -7,15 +7,15 @@
 #define BEGINS(x) namespace x {
 #define ENDS(x) }
 
-#define LOG(level) haizei::Logger::LoggerStream(level, __FILE__, __LINE__, haizei::haizei_log)
-#define LOG_INFO LOG(haizei::LogLevel::INFO)
-#define LOG_WARNNING LOG(haizei::LogLevel::WARNNING)
-#define LOG_DEBUG LOG(haizei::LogLevel::DEBUG)
-#define LOG_ERROR LOG(haizei::LogLevel::ERROR)
-#define LOG_FATAL LOG(haizei::LogLevel::FATAL)
-#define SET_LEVEL(level) haizei::haizei_log.set_level(level)
+#define LOG(level) log_print::Logger::LoggerStream(level, __FILE__, __LINE__, log_print::my_log)
+#define LOG_INFO LOG(log_print::LogLevel::INFO)
+#define LOG_WARNNING LOG(log_print::LogLevel::WARNNING)
+#define LOG_DEBUG LOG(log_print::LogLevel::DEBUG)
+#define LOG_ERROR LOG(log_print::LogLevel::ERROR)
+#define LOG_FATAL LOG(log_print::LogLevel::FATAL)
+#define SET_LEVEL(level) log_print::my_log.set_level(level)
 
-BEGINS(haizei)
+BEGINS(log_print)
 
 class LogLevel {
 public :
@@ -66,9 +66,9 @@ public :
     std::mutex m_mutex;
 };
 
-Logger haizei_log;
+Logger my_log;
 
-ENDS(haizei)
+ENDS(log_print)
 
 void func(int a, int b, int c) {
     LOG_INFO << a << " " << b << " " << c;
@@ -76,13 +76,12 @@ void func(int a, int b, int c) {
 }
 
 int main() {
-    //SET_LEVEL(haizei::LogLevel::DEBUG);
     LOG_INFO << " hello world " << 123 << " " << 12.45;
     LOG_WARNNING << " hello world " << 123 << " " << 12.45;
     LOG_DEBUG <<  "hello world " << 123 << " " << 12.45;
     LOG_ERROR << " hello world " << 123 << " " << 12.45;
     LOG_FATAL << " hello world " << 123 << " " << 12.45;
-    haizei::ThreadPool tp;
+    thread_pool::ThreadPool tp;
     for (int i = 0; i < 100; i++) {
         tp.addOneTask(func, i, 2 * i, 3 * i);
     }
